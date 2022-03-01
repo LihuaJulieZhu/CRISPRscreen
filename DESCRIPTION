@@ -1,0 +1,29 @@
+Package: CRISPRscreen
+Title: Analysis and Visualization of High-throughput CRISPR Screening Data 
+Version: 0.0.0.9000
+Authors@R: 
+    person(c("Lihua", "Julie"), "Zhu", , "Julie.zhu@umassmed.edu", 
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0001-7416-0590"))
+Description: Quality assessment, statistical analysis, and visualization of high-throughput CRISPR screening data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+LazyData: TRUE
+biocViews: CRISPR, SystemBiology, FunctionalGenomics, QualityControl, Visualization, StatisticalMethod
+Depends:
+    BSgenome.Hsapiens.UCSC.hg19
+Suggests:
+    testthat
+Imports: 
+    CRISPRseek,
+    dplyr,
+    ggplot2,
+    ggrepel,
+    methods,
+    multtest,
+    patchwork,
+    stats,
+    stringr,
+    writexl

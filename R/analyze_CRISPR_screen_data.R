@@ -24,7 +24,7 @@
 #' @param min_odds_ratio gRNAs with odds_ratio >= min_odds_ratio will be kept in
 #' the filtered results, default to 1
 #' @param max_odds_ratio gRNAs with odds_ratio <= max_odds_ratio will be kept in
-#' the filtered results
+#' the filtered results if provided by users
 #' @param ngRNAs_per_gene The designed number of gRNAs per gene in the 
 #' screening library
 #' @param split Used to extract gene symbol, gene_id, and gRNA from c
@@ -79,7 +79,7 @@ analyze_CRISPR_screen_data <- function(gRNA_count_files,
                                        maxP = 0.05,
                                        gene_col = 2,
                                        min_odds_ratio = 1,
-                                       max_odds_ratio,
+                                       max_odds_ratio = 1000000,
                                        ngRNAs_per_gene = 4,
                                        split = ":",
                                        column_to_split = "gene",

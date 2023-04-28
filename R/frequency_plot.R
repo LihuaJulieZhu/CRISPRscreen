@@ -16,8 +16,10 @@
 #' @param anno_gene_col If plot_facet is set to by_category, then
 #' category_anno needs to be specified with category specified in
 #' anno_category_col and gene symbol specified in anno_gene_col.
-#' @param highlight_color the color used for highlighting the genes specified
-#' by genes_to_highlight
+#' @param highlight_color_up the color used for highlighting the
+#' genes specified by genes_to_highlight and up
+#' @param highlight_color_down the color used for highlighting the
+#' genes specified by genes_to_highlight and down
 #' @param gene_col the column containing the gene symbol
 #' @param alpha for specifying the percentage of data to plot in histogram,
 #' default to 0.5 (50 percent)
@@ -36,6 +38,10 @@
 #' @param FDR_label_size the size of FDR label
 #' @param cutoff specify where to draw to vertical dash line to indicate the
 #' cutoff. Default to log odds ratio of 0.
+#' @param include_FDR Indicates whether to include FDR on the right side of
+#' the plot for each gene. Default to TRUE.
+#' @param Indicates whether the genes_to_highlight is ordered.
+#' Default to TRUE, i.e., genes_to_highlight will be plotted from top to bottom.
 #' @author Lihua Julie Zhu
 #' @import patchwork
 #' @import ggplot2
@@ -69,20 +75,23 @@
 
 frequency_plot <-function(x, genes_to_highlight,
 			 category_anno,
-                         anno_category_col = 1,
-                         anno_gene_col = 2,
-                         highlight_color = "red",
-                         gene_col = 2,
-                         alpha = 0.5,
-			 odds_ratio_col = 11,
-                         FDR_col = 12,
-                         bins = 100,
-                         inverse_odds_ratio = FALSE,
-                         plot_facet = c("by_gene", "by_category", "none"),
-                         gene_label_size = 10,
-                         dashline_color = "purple",
-			 FDR_label_size = 4,
-                         cutoff = 0
+       anno_category_col = 1,
+       anno_gene_col = 2,
+       highlight_color_up = "red",
+       highlight_color_down = "blue",
+       gene_col = 2,
+       alpha = 0.5,
+       odds_ratio_col = 11,
+       FDR_col = 12,
+       bins = 100,
+       inverse_odds_ratio = FALSE,
+       plot_facet = c("by_gene", "by_category", "none"),
+       gene_label_size = 12,
+       dashline_color = "purple",
+       FDR_label_size = 4,
+       cutoff = 0,
+       include_FDR = TRUE,
+       gene_list_ordered = TRUE
 )
 {
   if (missing(x) || class(x) != "data.frame")
@@ -129,56 +138,16 @@ frequency_plot <-function(x, genes_to_highlight,
 
    p1 <- ggplot(data= x,
          aes(x = log_odds_ratio)) +
-         geom_histogram(alpha = alpha, bins = bins) +
+         #geom_histogram(alpha = alpha, bins = bins) +
+     scale_x_continuous(limits = c(min.x.pos, max.x.pos)) +
+          geom_density(color = "grey") +
          theme(panel.grid.major = element_blank(),
            panel.grid.minor = element_blank(),
            axis.title.x = element_text(angle = 0, hjust = myhjust))
    temp <- density(x$log_odds_ratio, adjust = 1)
    temp <- data.frame(x = temp$x, y = temp$y)
 
-
-   if (plot_facet == "by_gene_test")
-   {
-     limit = c(min(x$log_odds_ratio),max(x$log_odds_ratio))
-     temp <- do.call("rbind", replicate(length(genes_to_highlight), temp, simplify = FALSE))
-     temp <- temp %>% mutate(Gene = as.vector(t(replicate(genes_to_highlight, n= nrow(temp)/length(genes_to_highlight)))))
-     xh <- x %>% filter(Gene %in% genes_to_highlight) %>%
-      select(Gene, log_odds_ratio, FDR) %>%
-      filter(!is.na(FDR))
-
-     xh %>% group_by(Gene) %>%
-         summarise(minP = min(FDR, na.rm=TRUE)) -> minP.temp
-
-     xh <- merge(xh, minP.temp, by = "Gene")
-
-     p2 <- ggplot(data= temp,
-        aes(x = x, y = 1)) +
-        scale_x_continuous(limits = limit) +
-        #geom_tile(aes(fill = y)) +
-        geom_vline( xintercept  = cutoff, color = dashline_color, linetype= 2) +
-        geom_tile(data = xh,
-           aes(x = log_odds_ratio, y = 1, fill = log_odds_ratio), color = highlight_color) +
-        facet_grid(Gene ~ .) +
-#        scale_fill_gradient(low = "white", high = "black") +
-        theme_grey() +
-        labs(x = "", y = "") +
-        scale_y_discrete(expand = c(0,0)) +
-        coord_fixed(ratio=1) +
-        theme(legend.position = "none",
-           axis.ticks = element_blank(), axis.text.x = element_blank(),
-           axis.title = element_text(size = gene_label_size),
-           axis.title.y = element_text(angle = 0, hjust = 0.5, vjust = 0.5),
-           strip.text.y = element_text(angle = 0, hjust = 0) ,
-           plot.title=element_text(hjust = 1),
-           strip.placement = "outside",
-           plot.caption = element_text(hjust = 0.5)) +
-           labs(x = "<-      ->",
-                 caption = "Depleted   Enriched") +
-           #geom_text(data = xh, aes(x = 6, y = Gene, label = signif(minP, digits=3)), vjust = "inward", hjust = "inward") +
-           ggtitle("FDR       ")
-       list(p1, p2)
-   }
-   else if (plot_facet == "by_category" || plot_facet == "by_gene") {
+if (plot_facet == "by_category" || plot_facet == "by_gene") {
       anno <- category_anno[, c(anno_category_col, anno_gene_col)]
       colnames(anno) <- c("Category", "Gene")
       anno <- merge(anno, x, by = "Gene", all.x = FALSE)
@@ -188,12 +157,29 @@ frequency_plot <-function(x, genes_to_highlight,
          summarise(minP = min(FDR, na.rm=TRUE)) -> minP
       anno <- merge(anno, minP)
 
+      if (gene_list_ordered)
+      {
+          anno <- anno %>% filter(Gene %in% genes_to_highlight)
+          anno <- merge(anno,
+                        cbind(Gene = genes_to_highlight,
+                             gene_orders = 1:length(genes_to_highlight))) %>%
+            arrange(gene_orders) %>%
+            mutate(Gene = factor(Gene, levels = rev(genes_to_highlight)))
+      }
+      anno <- anno %>% mutate(highlight_color = ifelse(log_odds_ratio >= 0,
+                                               highlight_color_up,
+                                               highlight_color_down))
+      anno$highlight_color <- as.factor(anno$highlight_color)
       p2 <- anno %>% ggplot( aes(x = log_odds_ratio, y = Gene)) +
           scale_x_continuous(limits = c(min.x.pos, max.x.pos)) +
-          geom_point(aes(x = log_odds_ratio, y = Gene),  color = highlight_color ) +
+          geom_point(aes(x = log_odds_ratio, y = Gene,  color = highlight_color)) +
           geom_vline(xintercept  = cutoff, color = dashline_color, linetype= 2) +
-          geom_line(aes(x = log_odds_ratio, y = Gene), color = highlight_color, linetype = 2 ) +
-          geom_tile(aes(fill = log_odds_ratio),  color = highlight_color ) +
+          #geom_line(aes(x = log_odds_ratio, y = Gene, color = highlight_color), linetype = 1 ) +
+          geom_tile(aes(fill = log_odds_ratio,  color = highlight_color) ) +
+          scale_colour_manual(values=c("blue"="blue", "red" = "red", "green"="green",
+                                       "purple" = "purple",
+                                     "yellow"="yellow","orange"="orange"),
+                            breaks=c("blue","red", "green","purple","yellow","orange")) +
           facet_grid(Category ~ ., scales = "free", space = "free") +
           theme(legend.position = "none", strip.text.y = element_text(angle = 0, hjust = 0) ,
              plot.title=element_text(hjust = 1),
@@ -201,13 +187,17 @@ frequency_plot <-function(x, genes_to_highlight,
              strip.placement = "outside",
              plot.caption = element_text(hjust = myhjust)) +
              labs(x = "<-      ->",
-                caption = "Depleted   Enriched", size = gene_label_size) +
-             ggtitle("FDR       ") +
-             geom_text(aes(x = max.x.pos, y = Gene, label = signif(minP, digits=3)),
-                    size = FDR_label_size, vjust = "inward", hjust = "inward")
+                caption = "Depleted   Enriched", size = gene_label_size,
+                family="Arial", face="bold")
+      if (include_FDR)
+           p2 <- p2 +  ggtitle("FDR     ") +
+             geom_text(aes(x = max.x.pos, y = Gene,
+                           label = signif(minP, digits=3)),
+                    size = FDR_label_size, vjust = "inward",
+                    hjust = "inward")
 
-       if( plot_facet == "by_gene")
-          p2 <- p2 + theme(strip.background = element_blank(),
+     if( plot_facet == "by_gene")
+            p2 <- p2 + theme(strip.background = element_blank(),
                            strip.text = element_blank())
        #p1/p2 +  plot_layout(heights=  c(1, 10))
 
@@ -231,15 +221,25 @@ frequency_plot <-function(x, genes_to_highlight,
 
       p <- list(length = length(genes_to_highlight))
       for (i in 1:length(genes_to_highlight)) {
+         highlight_color <- ifelse(x[x[, gene_col] ==
+                                      genes_to_highlight[i],
+                                    odds_ratio_col] >= 1, highlight_color_up,
+                                   highlight_color_down)
          p[[i]] <- p2 + geom_vline(xintercept = x[x[, gene_col] ==
                                                     genes_to_highlight[i],
-               odds_ratio_col], color = highlight_color) +
+               odds_ratio_col],
+               color = highlight_color) +
                labs(y = genes_to_highlight[i]) +
                geom_text(x = max(temp[,1]), y = 1, size = FDR_label_size,
                    label = signif(min(x[x[, gene_col] ==
                                           genes_to_highlight[i], FDR_col]),
                                   digits=3),
-                   vjust = "inward", hjust = "inward")
+                   vjust = "inward", hjust = "inward") +
+           scale_colour_manual(values=c("blue"="blue", "red" = "red", "green"="green",
+                                        "purple" = "purple",
+                                        "yellow"="yellow","orange"="orange"),
+                               breaks=c("blue","red", "green","purple","yellow","orange"))
+
       }
       p[[1]] <- p[[1]] + ggtitle("FDR       ")
       p[[length(genes_to_highlight)]] <-

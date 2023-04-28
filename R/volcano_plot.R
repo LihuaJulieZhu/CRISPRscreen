@@ -46,6 +46,7 @@
 #' @param highlight_genes_4gRNAs only applicable if plot_unit is gene.
 #' It is used for indicating whether to use different color for the genes
 #' with 4 gRNAs signficantly altered in the same direction.
+#' @param label_size size of the genes to highlight in the plot
 #' @author Lihua Julie Zhu
 #' @import ggplot2
 #' @import dplyr
@@ -99,7 +100,8 @@ volcano_plot <- function(x,
                          point_size = c(1, 2, 4, 6, 9),
                          summarize_FDR_fun = "min",
                          summarize_log_odds_ratio_fun = "max",
-                         highlight_genes_4gRNAs = TRUE)
+                         highlight_genes_4gRNAs = TRUE,
+                         label_size = 4)
 {
   if (!highlight_genes_4gRNAs)
   {
@@ -137,7 +139,9 @@ volcano_plot <- function(x,
           x.nc <- x.nc %>% filter(!Symbol %in% genes.sig)
 
           genes.incons <- intersect(x.up$Symbol, x.down$Symbol)
-
+          genes.incons <- setdiff(genes.incons,
+                                  c(genes_to_label,
+                                    genes_to_highlight))
           x.up <- x.up %>% filter(!Symbol %in% genes.incons)
           x.down <- x.down %>% filter(!Symbol %in% genes.incons)
 
@@ -261,7 +265,8 @@ volcano_plot <- function(x,
                          max.overlaps =  max.overlaps,
                          data = x[x[, odds_ratio_col] > log2(odds_ratio_cutoff) &
                                   x[, adj_pvalue_col] < adj_pvalue_cutoff &
-                                  x$Symbol %in% genes_to_highlight,], size = 4) +
+                                  x$Symbol %in% genes_to_highlight,],
+                         size = label_size) +
          #scale_colour_manual(values = colors, labels = legend_color_labels) +
          geom_vline(xintercept=c(-log2(odds_ratio_cutoff),
                                  log2(odds_ratio_cutoff)), col=  "grey") +

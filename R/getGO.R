@@ -1,5 +1,5 @@
 #' @title Get Gene Ontology Annotation for the input gene list
-#' @param all.genes A vector of gene IDs
+#' @param all_genes A vector of gene IDs
 #' @param orgAnn orgAnn	Organism annotation package such as org.Hs.eg.db for 
 #' human and org.Mm.eg.db for mouse, org.Dm.eg.db for fly, org.Rn.eg.db for 
 #' rat, org.Sc.eg.db for yeast, and org.Dr.eg.db for zebrafish
@@ -10,7 +10,7 @@
 #' @importFrom writexl  write_xlsx
 #'
 getGO <-
-function(all.genes, 
+function(all_genes, 
          orgAnn, 
          output_file, 
          ID_type="gene_symbol")
@@ -36,7 +36,7 @@ function(all.genes,
     ids
   }
 
-  entrezIDs <- cov2EntrezID(as.character(all.genes), orgAnn, "gene_symbol")
+  entrezIDs <- cov2EntrezID(as.character(all_genes), orgAnn, "gene_symbol")
 
   if (length(entrezIDs) < 2) {
     stop("The number of gene is less than 2. Please double check your feature_id_type.")
@@ -73,7 +73,7 @@ function(all.genes,
   this.GO.withTerms <- unique(annoTerms(this.GO[,1]))
   colnames(this.GO) = c("go.id", "Evidence", "Ontology", "EntrezID")
 
-  IDs <- as.character(all.genes)
+  IDs <- as.character(all_genes)
   GOgenome = sub(".db", "", orgAnn)
   orgAnn2 <- switch(ID_type, ensembl_gene_id = "ENSEMBL2EG",
                     gene_symbol = "SYMBOL2EG", refseq_id = "REFSEQ2EG",

@@ -7,7 +7,7 @@
 filter_gRNAs(
   gRNAs,
   comparison,
-  multiAdjMethod = "BH",
+  multi_adj_method = "BH",
   maxP = 0.05,
   min_odds_ratio = 1,
   max_odds_ratio,
@@ -22,13 +22,13 @@ filter_gRNAs(
 \item{comparison}{The comparison name. For example, use "B vs A" for comparing
 sample B and A}
 
-\item{multiAdjMethod}{A vector of character strings containing the names of
+\item{multi_adj_method}{A vector of character strings containing the names of
 the multiple testing procedures for which adjusted p-values are to be
 computed. This vector should include any of the following:
 "Bonferroni", "Holm", "Hochberg", "SidakSS", "SidakSD", "BH", "BY", "ABH",
 and "TSBH". Please type ?multtest::mt.rawp2adjp for details}
 
-\item{maxP}{maximum p-value cutoff. Please note that if multiAdjMethod is set,
+\item{maxP}{maximum p-value cutoff. Please note that if multi_adj_method is set,
 this is the maximum adjusted p-value}
 
 \item{min_odds_ratio}{gRNAs with odds_ratio >= min_odds_ratio will be kept in
@@ -47,7 +47,7 @@ Default to 2, i.e., the second column contains the gene symbol.}
 @return A list of four data frames: genes with at least one gRNA, two, three,
 and four gRNAs being significant respectively. Significance is determined
 using the filtering criteria set by users. The filtering criteria
-includes multiAdjMethod, maxP, min_odds_ratio,
+includes multi_adj_method, maxP, min_odds_ratio,
 and max_odds_ratio. Default settings will be used if users do not modify
 these parameters.}
 }

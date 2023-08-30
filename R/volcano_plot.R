@@ -118,10 +118,10 @@ volcano_plot <- function(x,
   if (plot_unit == "gene")
   {
           up.gRNAs <- filter_gRNAs(x, min_odds_ratio = odds_ratio_cutoff,
-                        multiAdjMethod = "BH", gene_col = gene_col,
+                        multi_adj_method = "BH", gene_col = gene_col,
                         maxP = adj_pvalue_cutoff, output_file = "temp.xlsx")
           down.gRNAs <- filter_gRNAs(x,
-                         multiAdjMethod = "BH", gene_col = gene_col,
+                         multi_adj_method = "BH", gene_col = gene_col,
                          max_odds_ratio = 1/odds_ratio_cutoff,
                          maxP = adj_pvalue_cutoff, output_file = "temp.xlsx")
           unlink("temp.xlsx")
@@ -267,7 +267,7 @@ volcano_plot <- function(x,
                                   x[, adj_pvalue_col] < adj_pvalue_cutoff &
                                   x$Symbol %in% genes_to_highlight,],
                          size = label_size) +
-         #scale_colour_manual(values = colors, labels = legend_color_labels) +
+         scale_colour_manual(values = colors, labels = legend_color_labels) +
          geom_vline(xintercept=c(-log2(odds_ratio_cutoff),
                                  log2(odds_ratio_cutoff)), col=  "grey") +
          geom_hline(yintercept=-log10(adj_pvalue_cutoff), col=  "grey") +
@@ -275,8 +275,12 @@ volcano_plot <- function(x,
 
       if (plot_unit == "gRNA")
         p
-      else
-          p + scale_size(name   = "# of significant gRNAs",
+      else if(length(legend_size_labels) > 1)
+        p + scale_size(name   = "# of significant gRNAs",
                breaks = point_size,
                labels = legend_size_labels)
+     else
+       p + scale_size(name   = "# of significant gRNAs",
+                      breaks = point_size) + 
+                      theme(legend.position ="none")
 }

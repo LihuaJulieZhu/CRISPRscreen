@@ -18,7 +18,7 @@
 #' \item{BSgenome.Drerio.UCSC.danRer7} - for Zv9
 #' \item{BSgenome.Dmelanogaster.UCSC.dm3} - for dm3
 #' }
-#' @param outputDir the directory where the off target analysis and reports
+#' @param output_dir the directory where the off target analysis and reports
 #' will be written to
 #' @param overwrite overwrite the existing files in the output directory or
 #' @param ... Please see additional parameters in offTargetAnalysis of 
@@ -33,12 +33,12 @@
 #' @examples
 #'  library(CRISPRseek)
 #' 	library("BSgenome.Hsapiens.UCSC.hg19")
-#' 	outputDir <- getwd()
+#' 	output_dir <- getwd()
 #'
 add_efficacy <- function(gRNAs,
                          rule_set = "CRISPRscan",
                          BSgenomeName,
-                         outputDir,
+                         output_dir,
                          overwrite = FALSE, ...)
 {
   if (rule_set == "CRISPRscan")
@@ -58,7 +58,7 @@ add_efficacy <- function(gRNAs,
                             BSgenomeName = BSgenomeName,
                             max.mismatch = 0,
                             featureWeightMatrixFile = featureWeightMatrixFile,
-                            outputDir = outputDir,
+                            outputDir = output_dir,
                             overwrite = overwrite, ...)
   res
 }

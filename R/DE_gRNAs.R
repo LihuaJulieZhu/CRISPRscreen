@@ -5,7 +5,7 @@
 #' @param min_total_count gRNAs with total observed counts summed over all groups
 #' less than min_total_count are excluded before statistical
 #' analysis
-#' @param multiAdjMethod A vector of character strings containing the names of 
+#' @param multi_adj_method A vector of character strings containing the names of 
 #' the multiple testing procedures for which adjusted p-values are to be 
 #' computed. This vector should include any of the following: 
 #' "Bonferroni", "Holm", "Hochberg", "SidakSS", "SidakSD", "BH", "BY", "ABH", 
@@ -22,7 +22,7 @@ DE_gRNAs <- function(gRNAs,
                      col_count1 = 3,
                      col_count2 = 2,
                      min_total_count = 6,
-                     multiAdjMethod = "BH")
+                     multi_adj_method = "BH")
 {
   if (missing(gRNAs)) {
     stop("gRNAs is required!")
@@ -58,13 +58,13 @@ DE_gRNAs <- function(gRNAs,
   colnames(gRNAs)[col_count2] = str_c(c(group2, "count"),
                                           collapse = ".")
   gRNAs = merge(gRNAs, pvalue)
-  if (multiAdjMethod != "none") {
-    procs = c(multiAdjMethod)
+  if (multi_adj_method != "none") {
+    procs = c(multi_adj_method)
     ptemp = gRNAs[, dim(gRNAs)[2] - 1]
     res <- mt.rawp2adjp(ptemp, procs)
     adjp = unique(res$adjp)
     colnames(adjp)[1] =  "p.value"
-    colnames(adjp)[2] = str_c(c(group1, "vs", group2, multiAdjMethod, 
+    colnames(adjp)[2] = str_c(c(group1, "vs", group2, multi_adj_method, 
                                 "adjusted.p.value"),
                               collapse  = ".")
     temp = merge(gRNAs, adjp, all.x = TRUE)

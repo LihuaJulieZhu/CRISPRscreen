@@ -11,7 +11,8 @@ frequency_plot(
   category_anno,
   anno_category_col = 1,
   anno_gene_col = 2,
-  highlight_color = "red",
+  highlight_color_up = "red",
+  highlight_color_down = "blue",
   gene_col = 2,
   alpha = 0.5,
   odds_ratio_col = 11,
@@ -19,10 +20,13 @@ frequency_plot(
   bins = 100,
   inverse_odds_ratio = FALSE,
   plot_facet = c("by_gene", "by_category", "none"),
-  gene_label_size = 10,
+  gene_label_size = 12,
   dashline_color = "purple",
   FDR_label_size = 4,
-  cutoff = 0
+  FDR_vjust = "inward",
+  cutoff = 0,
+  include_FDR = TRUE,
+  gene_list_ordered = TRUE
 )
 }
 \arguments{
@@ -46,8 +50,11 @@ anno_category_col and gene symbol specified in anno_gene_col.}
 category_anno needs to be specified with category specified in
 anno_category_col and gene symbol specified in anno_gene_col.}
 
-\item{highlight_color}{the color used for highlighting the genes specified
-by genes_to_highlight}
+\item{highlight_color_up}{the color used for highlighting the
+genes specified by genes_to_highlight and up}
+
+\item{highlight_color_down}{the color used for highlighting the
+genes specified by genes_to_highlight and down}
 
 \item{gene_col}{the column containing the gene symbol}
 
@@ -75,8 +82,17 @@ ratio of 0}
 
 \item{FDR_label_size}{the size of FDR label}
 
+\item{FDR_vjust}{specifies justification orthogonal to the direction of the
+FDR value, default to 0.5 (middle)}
+
 \item{cutoff}{specify where to draw to vertical dash line to indicate the
 cutoff. Default to log odds ratio of 0.}
+
+\item{include_FDR}{Indicates whether to include FDR on the right side of
+the plot for each gene. Default to TRUE.}
+
+\item{gene_list_ordered}{Indicates whether the genes_to_highlight is ordered.
+Default to TRUE, i.e., genes_to_highlight will be plotted from top to bottom.}
 }
 \value{
 a list of ggplot object of size 2

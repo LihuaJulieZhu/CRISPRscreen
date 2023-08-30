@@ -2,12 +2,12 @@
 #' @param gRNAs Results from DE_gRNAs
 #' @param comparison The comparison name. For example, use "B vs A" for comparing
 #' sample B and A
-#' @param multiAdjMethod A vector of character strings containing the names of 
+#' @param multi_adj_method A vector of character strings containing the names of 
 #' the multiple testing procedures for which adjusted p-values are to be 
 #' computed. This vector should include any of the following: 
 #' "Bonferroni", "Holm", "Hochberg", "SidakSS", "SidakSD", "BH", "BY", "ABH", 
 #' and "TSBH". Please type ?multtest::mt.rawp2adjp for details
-#' @param maxP maximum p-value cutoff. Please note that if multiAdjMethod is set,
+#' @param maxP maximum p-value cutoff. Please note that if multi_adj_method is set,
 #' this is the maximum adjusted p-value
 #' @param min_odds_ratio gRNAs with odds_ratio >= min_odds_ratio will be kept in
 #' the filtered results, default to 1
@@ -21,7 +21,7 @@
 #'  @return A list of four data frames: genes with at least one gRNA, two, three,
 #' and four gRNAs being significant respectively. Significance is determined
 #' using the filtering criteria set by users. The filtering criteria
-#' includes multiAdjMethod, maxP, min_odds_ratio,
+#' includes multi_adj_method, maxP, min_odds_ratio,
 #' and max_odds_ratio. Default settings will be used if users do not modify
 #' these parameters.
 #' @author Lihua Julie Zhu
@@ -30,7 +30,7 @@
 #'
 filter_gRNAs <- function(gRNAs,
                          comparison,
-                         multiAdjMethod = "BH",
+                         multi_adj_method = "BH",
                          maxP = 0.05,
                          min_odds_ratio = 1,
                          max_odds_ratio,
@@ -50,11 +50,11 @@ filter_gRNAs <- function(gRNAs,
   {
     stop("Please specify either max_odds_ratio or min_odds_ratio to obtain enriched or depleted gRNAs!\n")
   }
-  if (multiAdjMethod != "none") {
+  if (multi_adj_method != "none") {
     if(!missing(comparison) && comparison != "")
-        p_col <- sym(paste(comparison, multiAdjMethod, "adjusted.p.value", sep ="."))
+        p_col <- sym(paste(comparison, multi_adj_method, "adjusted.p.value", sep ="."))
     else
-        p_col <- sym(paste(multiAdjMethod, "adjusted.p.value", sep ="."))  # called from volcano_plot
+        p_col <- sym(paste(multi_adj_method, "adjusted.p.value", sep ="."))  # called from volcano_plot
   }
   else if (!missing(comparison) && comparison != "")
         p_col <- sym(paste(comparison, "p.value", sep ="."))

@@ -8,16 +8,16 @@
 #' @param sep delimiter in the gRNA_count_files. Default to space
 #' @param header TRUE or FALSE indicating whether the files specified in
 #' gRNA_count_files contain header or not. Default to FALSE
-#' @param comparisons_group1 The denominator for calculating Log odds ratio
-#' @param comparisons_group2 The numerator for calculating log odds ratio
-#' @param multiAdjMethod A vector of character strings containing the names of 
+#' @param comparisons_group1 The numerator for calculating Log odds ratio
+#' @param comparisons_group2 The denominator for calculating log odds ratio
+#' @param multi_adj_method A vector of character strings containing the names of 
 #' the multiple testing procedures for which adjusted p-values are to be 
 #' computed. This vector should include any of the following: 
 #' "Bonferroni", "Holm", "Hochberg", "SidakSS", "SidakSD", "BH", "BY", "ABH", 
 #' and "TSBH". Please type ?multtest::mt.rawp2adjp for details
 #' @param min_total_count gRNAs with total count summed over all groups less 
 #' than min_total_count are excluded from further statistical analysis.
-#' @param maxP maximum p-value cutoff. Please note that if multiAdjMethod is set,
+#' @param maxP maximum p-value cutoff. Please note that if multi_adj_method is set,
 #' this is the maximum adjusted p-value
 #' @param gene_col For calculating the number of significant gRNAs per gene.
 #' Default to 2, i.e., the second column contains the gene symbol.
@@ -48,7 +48,7 @@
 #' containing four data frames: genes with at least one gRNA, two, three,
 #' and four gRNAs being significant respectively. Significance is determined
 #' using the filtering criteria set by users. The filtering criteria
-#' includes multiAdjMethod, min_total_count, maxP, min_odds_ratio,
+#' includes multi_adj_method, min_total_count, maxP, min_odds_ratio,
 #' and max_odds_ratio. Default settings will be used if users do not modify
 #' these parameters.
 #' @author Lihua Julie Zhu
@@ -64,7 +64,7 @@
 #'             sample_names = c("A", "B"),
 #'             comparisons_group1 = "B",
 #'             comparisons_group2 = "A",
-#'             multiAdjMethod = "BH",
+#'             multi_adj_method = "BH",
 #'             min_total_count = 1, drug_target = drug_target,
 #'             output_file = "allgRNAs_stats_results.xlsx")
 #'
@@ -74,7 +74,7 @@ analyze_CRISPR_screen_data <- function(gRNA_count_files,
                                        header = FALSE,
                                        comparisons_group1 = c("B", "C"),
                                        comparisons_group2 = c("A", "A"),
-                                       multiAdjMethod,
+                                       multi_adj_method,
                                        min_total_count = 6,
                                        maxP = 0.05,
                                        gene_col = 2,
@@ -120,7 +120,7 @@ analyze_CRISPR_screen_data <- function(gRNA_count_files,
              col_count1 = col_count1,
              col_count2 = col_count2,
              min_total_count = min_total_count,
-             multiAdjMethod = multiAdjMethod) # %>%
+             multi_adj_method = multi_adj_method) # %>%
     # select(!(!!unwanted_col))
   })
   
@@ -141,7 +141,7 @@ analyze_CRISPR_screen_data <- function(gRNA_count_files,
     if (exists(deparse(substitute(min_odds_ratio))))
       filter_gRNAs(stats_results,
                    comparison = this_comparison,
-                   multiAdjMethod = multiAdjMethod,
+                   multi_adj_method = multi_adj_method,
                    maxP = maxP, gene_col = gene_col,
                    min_odds_ratio = min_odds_ratio,
                    ngRNAs_per_gene = ngRNAs_per_gene,
@@ -149,7 +149,7 @@ analyze_CRISPR_screen_data <- function(gRNA_count_files,
     else if (exists(deparse(substitute(max_odds_ratio))))
       filter_gRNAs(stats_results,
                    comparison = this_comparison,
-                   multiAdjMethod = multiAdjMethod,
+                   multi_adj_method = multi_adj_method,
                    maxP = maxP, gene_col = gene_col,
                    max_odds_ratio = max_odds_ratio,
                    ngRNAs_per_gene = ngRNAs_per_gene,

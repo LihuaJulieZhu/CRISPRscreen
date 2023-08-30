@@ -9,7 +9,7 @@ DE_gRNAs(
   col_count1 = 3,
   col_count2 = 2,
   min_total_count = 6,
-  multiAdjMethod = "BH"
+  multi_adj_method = "BH"
 )
 }
 \arguments{
@@ -23,7 +23,7 @@ DE_gRNAs(
 less than min_total_count are excluded before statistical
 analysis}
 
-\item{multiAdjMethod}{A vector of character strings containing the names of
+\item{multi_adj_method}{A vector of character strings containing the names of
 the multiple testing procedures for which adjusted p-values are to be
 computed. This vector should include any of the following:
 "Bonferroni", "Holm", "Hochberg", "SidakSS", "SidakSD", "BH", "BY", "ABH",

@@ -36,11 +36,13 @@
 #' @param dashline_color the color for drawing the dashed line for log odds
 #' ratio of 0
 #' @param FDR_label_size the size of FDR label
+#' @param FDR_vjust  specifies justification orthogonal to the direction of the 
+#' FDR value, default to 0.5 (middle)
 #' @param cutoff specify where to draw to vertical dash line to indicate the
 #' cutoff. Default to log odds ratio of 0.
 #' @param include_FDR Indicates whether to include FDR on the right side of
 #' the plot for each gene. Default to TRUE.
-#' @param Indicates whether the genes_to_highlight is ordered.
+#' @param gene_list_ordered Indicates whether the genes_to_highlight is ordered.
 #' Default to TRUE, i.e., genes_to_highlight will be plotted from top to bottom.
 #' @author Lihua Julie Zhu
 #' @import patchwork
@@ -89,6 +91,7 @@ frequency_plot <-function(x, genes_to_highlight,
        gene_label_size = 12,
        dashline_color = "purple",
        FDR_label_size = 4,
+			 FDR_vjust = "inward",
        cutoff = 0,
        include_FDR = TRUE,
        gene_list_ordered = TRUE
@@ -140,7 +143,7 @@ frequency_plot <-function(x, genes_to_highlight,
          aes(x = log_odds_ratio)) +
          #geom_histogram(alpha = alpha, bins = bins) +
      scale_x_continuous(limits = c(min.x.pos, max.x.pos)) +
-          geom_density(color = "grey") +
+          geom_density(color = "#AAAAAA", fill = "#AAAAAA") +
          theme(panel.grid.major = element_blank(),
            panel.grid.minor = element_blank(),
            axis.title.x = element_text(angle = 0, hjust = myhjust))
@@ -172,10 +175,11 @@ if (plot_facet == "by_category" || plot_facet == "by_gene") {
       anno$highlight_color <- as.factor(anno$highlight_color)
       p2 <- anno %>% ggplot( aes(x = log_odds_ratio, y = Gene)) +
           scale_x_continuous(limits = c(min.x.pos, max.x.pos)) +
-          geom_point(aes(x = log_odds_ratio, y = Gene,  color = highlight_color)) +
-          geom_vline(xintercept  = cutoff, color = dashline_color, linetype= 2) +
-          #geom_line(aes(x = log_odds_ratio, y = Gene, color = highlight_color), linetype = 1 ) +
-          geom_tile(aes(fill = log_odds_ratio,  color = highlight_color) ) +
+        #  geom_point(aes(x = log_odds_ratio, y = Gene,  color = highlight_color)) +
+          geom_vline(xintercept  = cutoff, color = dashline_color, linetype= 2, size = 0.8) +
+          #geom_line(aes(x = log_odds_ratio, y = Gene, color = highlight_color),
+            #        linetype = 1) +
+          geom_tile(aes(fill = log_odds_ratio,  color = highlight_color), size = 0.6) +
           scale_colour_manual(values=c("blue"="blue", "red" = "red", "green"="green",
                                        "purple" = "purple",
                                      "yellow"="yellow","orange"="orange"),
@@ -193,7 +197,7 @@ if (plot_facet == "by_category" || plot_facet == "by_gene") {
            p2 <- p2 +  ggtitle("FDR     ") +
              geom_text(aes(x = max.x.pos, y = Gene,
                            label = signif(minP, digits=3)),
-                    size = FDR_label_size, vjust = "inward",
+                    size = FDR_label_size, vjust = FDR_vjust,
                     hjust = "inward")
 
      if( plot_facet == "by_gene")

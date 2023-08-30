@@ -4,10 +4,10 @@
 \alias{getGO}
 \title{Get Gene Ontology Annotation for the input gene list}
 \usage{
-getGO(all.genes, orgAnn, output_file, ID_type = "gene_symbol")
+getGO(all_genes, orgAnn, output_file, ID_type = "gene_symbol")
 }
 \arguments{
-\item{all.genes}{A vector of gene IDs}
+\item{all_genes}{A vector of gene IDs}
 
 \item{orgAnn}{orgAnn    Organism annotation package such as org.Hs.eg.db for
 human and org.Mm.eg.db for mouse, org.Dm.eg.db for fly, org.Rn.eg.db for

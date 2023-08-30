@@ -8,7 +8,7 @@ add_efficacy(
   gRNAs,
   rule_set = "CRISPRscan",
   BSgenomeName,
-  outputDir,
+  output_dir,
   overwrite = FALSE,
   ...
 )
@@ -35,7 +35,7 @@ BSgenome package. For example,
 \item{BSgenome.Dmelanogaster.UCSC.dm3} - for dm3
 }}
 
-\item{outputDir}{the directory where the off target analysis and reports
+\item{output_dir}{the directory where the off target analysis and reports
 will be written to}
 
 \item{overwrite}{overwrite the existing files in the output directory or}
@@ -53,14 +53,12 @@ Add gRNA efficacy to each gRNA
 \examples{
  library(CRISPRseek)
 	library("BSgenome.Hsapiens.UCSC.hg19")
-	outputDir <- getwd()
+	output_dir <- getwd()
 
 }
 \seealso{
 CRISPRseek
 }
 \author{
-Lihua Julie Zhu
-
 Lihua Julie Zhu
 }

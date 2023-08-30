@@ -20,13 +20,13 @@ volcano_plot(
   max.overlaps = 80,
   colors = c("purple", "blue", "gray", "orange"),
   legend_color_labels = c("4 gRNAs Altered", "Depleted", "Enriched", "No Change"),
-  legend_size_labels = c("0 gRNA Altered", "1 gRNA Altered", paste(2:4,
-    "gRNAs Altered")),
+  legend_size_labels = c("0 gRNA Altered", "1 gRNA Altered", paste(2:4, "gRNAs Altered")),
   plot_unit = c("gene", "gRNA"),
   point_size = c(1, 2, 4, 6, 9),
   summarize_FDR_fun = "min",
   summarize_log_odds_ratio_fun = "max",
-  highlight_genes_4gRNAs = TRUE
+  highlight_genes_4gRNAs = TRUE,
+  label_size = 4
 )
 }
 \arguments{
@@ -96,6 +96,8 @@ used for plotting depleted gene}
 \item{highlight_genes_4gRNAs}{only applicable if plot_unit is gene.
 It is used for indicating whether to use different color for the genes
 with 4 gRNAs signficantly altered in the same direction.}
+
+\item{label_size}{size of the genes to highlight in the plot}
 }
 \value{
 a ggplot object
